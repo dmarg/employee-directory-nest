@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EmployeesModule } from './employees/employees.module';
+import { PositionsModule } from './positions/positions.module';
+
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { EmployeesModule } from './employees/employees.module';
       typePaths: ['./**/*.graphql'],
       autoSchemaFile: './src/schema.gql',
     }), 
-    EmployeesModule,
+    EmployeesModule, PositionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

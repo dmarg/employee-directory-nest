@@ -9,7 +9,7 @@ export class EmployeesResolver {
   constructor(private readonly employeeService: EmployeesService) {}
 
   @Query(returns => [Employee])
-  async getEmployees() {
+  async getEmployees(): Promise<Employee[]> {
     return await this.employeeService.getEmployees();
   }
 
@@ -27,30 +27,10 @@ export class EmployeesResolver {
   
   @Mutation(returns => Boolean)
   async deleteEmployee(
-    @Args({name: 'id', type: () => Number}, ParseIntPipe) id: number,
+    @Args({name: 'id', type: () => Number}) id: number,
   ): Promise<boolean> {
     const response = await this.employeeService.deleteEmployee(id);
     return response.affected > 0 ? true : false;
   }
 
 }
-
-
-// @Resolver(of => Author)
-// export class AuthorResolver {
-//   constructor(
-//     private readonly authorsService: AuthorsService,
-//     private readonly postsService: PostsService,
-//   ) {}
-
-//   @Query(returns => Author)
-//   async author(@Args({ name: 'id', type: () => Int }) id: number) {
-//     return await this.authorsService.findOneById(id);
-//   }
-
-//   @ResolveProperty()
-//   async posts(@Parent() author) {
-//     const { id } = author;
-//     return await this.postsService.findAll({ authorId: id });
-//   }
-// }
