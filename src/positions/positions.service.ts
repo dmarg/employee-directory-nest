@@ -2,8 +2,8 @@ import { CreateEmployeeInput } from './../employees/employees.service';
 import { Position } from './positions.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
-import { InputType, Field } from 'type-graphql';
+import { Repository, DeleteResult, In } from 'typeorm';
+import { InputType, Field, ID } from 'type-graphql';
 import { Employee } from 'src/employees/employees.entity';
 
 @InputType()
@@ -11,19 +11,38 @@ export class CreatePositionInput {
   @Field()
   title: string;
 
-  @Field(type => CreateEmployeeInput)
-  employee: CreateEmployeeInput
+  @Field(type => ID)
+  employeeId: number;
 }
 
 @Injectable()
 export class PositionsService {
   constructor(
     @InjectRepository(Position)
-    private readonly positionRepository: Repository<Position>
+    private readonly positionRepository: Repository<Position>,
+
+    @InjectRepository(Employee)
+    private readonly employeeRepository: Repository<Employee>
   ) {}
 
-  async getPositions(): Promise<Position[]> {
-    return await this.positionRepository.find();
+  async loadPositionsByEmployees(employeeIds: number[] ): Promise<Position[][]> {
+    let query = { where: { employeeId: In(employeeIds) } };
+    let positions = await this.getPositions(query)
+    return employeeIds.map(id => {
+      return positions.filter(p => p.employeeId === id);
+    });
+  }
+
+  async loadCurrentPositionByEmployees(employeeIds: number[] ): Promise<Position[]> {
+    let query = { where: { employeeId: In(employeeIds), historicalIndex: 1 } };
+    let positions = await this.getPositions(query);
+    return employeeIds.map(id => {
+      return positions.find(p => p.employeeId === id);
+    });
+  }
+
+  async getPositions(query: any = {}): Promise<Position[]> {
+    return await this.positionRepository.find(query);
   }
 
   async getPosition(id: number): Promise<Position> {
@@ -36,9 +55,16 @@ export class PositionsService {
     }
   }
 
-  async addPosition(position: CreatePositionInput): Promise<CreatePositionInput> {
-    const _position = this.positionRepository.create(position);
-    return await this.positionRepository.save(_position);
+  async addPosition(payload: CreatePositionInput): Promise<Position> {
+    // const existingPositions = this.positionRepository
+    let employee = await this.employeeRepository.findOne(payload.employeeId, { relations: ["positions"] });
+
+    if (employee.id === Number(payload.employeeId)) {
+      const position = this.positionRepository.create({...payload, historicalIndex: 1, employee: employee});
+      return await this.positionRepository.save(position);  
+    } else {
+      throw new HttpException('Unprocessable Entity', 422);
+    }
   }
 
   async deletePosition(id: number): Promise<DeleteResult> {

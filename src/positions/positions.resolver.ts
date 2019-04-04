@@ -1,14 +1,16 @@
 import { Position } from 'src/positions/positions.entity';
 import { PositionsService, CreatePositionInput } from './positions.service';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { EmployeesService } from 'src/employees/employees.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 @Resolver('Positions')
 export class PositionsResolver {
-  constructor(private readonly positionsService: PositionsService) {}
+  constructor(private readonly positionsService: PositionsService, @Inject(forwardRef(() => EmployeesService)) private readonly employeeService: EmployeesService) {}
 
   @Query(returns => [Position], {name: 'positions'})
   async getPositions(): Promise<Position[]> {
-    return await this.positionsService.getPositions();
+    return await this.positionsService.getPositions({});
   }
 
   @Query(returns => Position, {name: 'position'}) 

@@ -29,7 +29,7 @@ export class EmployeesService {
   }
 
   async getEmployee(id: number): Promise<Employee> {
-    let employee = await this.employeeRepository.findOne(id);
+    let employee = await this.employeeRepository.findOne(id, { relations: ["positions"] });
 
     if (!employee) {
       throw new HttpException('Employee does not exist!', 404);
@@ -38,7 +38,7 @@ export class EmployeesService {
     }
   }
 
-  async addEmployee(employee: CreateEmployeeInput): Promise<CreateEmployeeInput> {
+  async addEmployee(employee: CreateEmployeeInput): Promise<Employee> {
     const _employee = this.employeeRepository.create(employee);
     return await this.employeeRepository.save(_employee);
   }

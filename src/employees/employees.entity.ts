@@ -27,6 +27,9 @@ export class Employee {
   @OneToMany(type => Position, position => position.employee)
   positions?: Position[];
 
+  @Field(type => Position, { nullable: true })
+  currentPosition?: Position
+
   // @Column('datetime')
   // createdAt: Date;
   
