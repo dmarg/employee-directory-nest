@@ -20,7 +20,7 @@ export class EmployeesResolver {
     return this.positionService.loadCurrentPositionByEmployees(employeeIds);
   });
 
-  @Query(returns => [Employee])
+  @Query(returns => [Employee], {name: 'employees'})
   async getEmployees(): Promise<Employee[]> {
     return await this.employeeService.getEmployees();
   }

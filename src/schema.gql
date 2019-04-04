@@ -3,6 +3,10 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input CreateDepartmentInput {
+  name: String!
+}
+
 input CreateEmployeeInput {
   firstName: String!
   lastName: String!
@@ -12,6 +16,12 @@ input CreateEmployeeInput {
 input CreatePositionInput {
   title: String!
   employeeId: ID!
+}
+
+type Department {
+  id: ID!
+  name: String!
+  positions: [Position!]
 }
 
 type Employee {
@@ -28,6 +38,8 @@ type Mutation {
   deletePosition(id: Float!): Boolean!
   addEmployee(employeeInput: CreateEmployeeInput!): Employee!
   deleteEmployee(id: Float!): Boolean!
+  addDepartment(departmentInput: CreateDepartmentInput!): Department!
+  deleteDepartment(id: Float!): Boolean!
 }
 
 type Position {
@@ -39,6 +51,8 @@ type Position {
 type Query {
   positions: [Position!]!
   position(id: Float!): Position!
-  getEmployees: [Employee!]!
+  employees: [Employee!]!
   employee(id: Float!): Employee!
+  departments: [Department!]!
+  department(id: Float!): Department!
 }
