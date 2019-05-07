@@ -1,7 +1,7 @@
 import { Department } from './departments.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, In } from 'typeorm';
 import { InputType, Field, Int } from 'type-graphql';
 
 @InputType()
@@ -17,8 +17,17 @@ export class DepartmentsService {
     private readonly departmentRepository: Repository<Department>
   ) {}
 
-  async findAll(): Promise<Department[]> {
-    return await this.departmentRepository.find();
+  async loadDepartmentsByIds(departmentIds: number[] ): Promise<Department[]> {
+    let query = { where: { id: In(departmentIds) } };
+    let departments = await this.findAll(query);
+
+    return departmentIds.map(id => {
+      return departments.find(d => d.id === id);
+    });
+  }
+
+  async findAll(query: any = {}): Promise<Department[]> {
+    return await this.departmentRepository.find(query);
   }
 
   async findOne(id: number): Promise<Department> {

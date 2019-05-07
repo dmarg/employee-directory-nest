@@ -1,9 +1,9 @@
 import { Employee } from './../employees/employees.entity';
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToOne, RelationId, JoinColumn } from 'typeorm';
 import { Field, ID, ObjectType, Int } from 'type-graphql';
 import { Department } from 'src/departments/departments.entity';
 
-@Entity()
+@Entity('positions')
 @ObjectType()
 export class Position {
 
@@ -11,22 +11,28 @@ export class Position {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Field()
-  @Column('text')
+  @Field({ nullable: true })
+  @Column('text', { nullable: true })
   title: string;
   
   @Field(type => Int)
-  @Column({type: 'int'})
+  @Column('int',{ name: 'historical_index', nullable: true})
   historicalIndex?: number;
   
-  @Column({type: 'int'})
-  employeeId: number;
-
   @ManyToOne(type => Employee, employee => employee.positions)
+  @JoinColumn({ name: 'employee_id', referencedColumnName: 'id' })
   employee: Employee;
 
-  @ManyToOne(type => Department, department => department.positions)
+  @Column('int', { name: 'employee_id' })
+  employeeId: number;
+  
+  @Field(type => Department, { nullable: true })
+  @ManyToOne(type => Department, department => department.positions, { nullable: true })
+  @JoinColumn({ name: 'department_id', referencedColumnName: 'id' })
   department: Department;
+
+  @Column('int', { name: 'department_id' })
+  departmentId: number;
 
   // @Column('datetime')
   // createdAt: Date;

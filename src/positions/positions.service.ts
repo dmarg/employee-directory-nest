@@ -26,7 +26,7 @@ export class PositionsService {
   ) {}
 
   async loadPositionsByEmployees(employeeIds: number[] ): Promise<Position[][]> {
-    let query = { where: { employeeId: In(employeeIds) } };
+    let query = { where: { employee_id: In(employeeIds) } };
     let positions = await this.getPositions(query)
     return employeeIds.map(id => {
       return positions.filter(p => p.employeeId === id);
@@ -34,10 +34,12 @@ export class PositionsService {
   }
 
   async loadCurrentPositionByEmployees(employeeIds: number[] ): Promise<Position[]> {
-    let query = { where: { employeeId: In(employeeIds), historicalIndex: 1 } };
+    let query = { where: { employee_id: In(employeeIds), historical_index: 1 } };
     let positions = await this.getPositions(query);
     return employeeIds.map(id => {
-      return positions.find(p => p.employeeId === id);
+      return positions.find(p => {
+        return p.employeeId === id;
+      });
     });
   }
 

@@ -8,5 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([Department]), forwardRef(() => PositionsModule)],
   providers: [DepartmentsService, DepartmentsResolver],
+  exports: [DepartmentsService],
 })
 export class DepartmentsModule {}

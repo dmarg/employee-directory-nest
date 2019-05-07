@@ -2,6 +2,5 @@
   "type": "postgres",
   "database": "employee_directory",
   "entities": ["src/**/**.entity{.ts,.js}"],
-  "synchronize": true,
   "logging": true
 }

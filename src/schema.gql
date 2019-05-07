@@ -20,14 +20,14 @@ input CreatePositionInput {
 
 type Department {
   id: ID!
-  name: String!
+  name: String
   positions: [Position!]
 }
 
 type Employee {
   id: ID!
-  firstName: String!
-  lastName: String!
+  firstName: String
+  lastName: String
   age: Int!
   positions: [Position!]
   currentPosition: Position
@@ -36,23 +36,24 @@ type Employee {
 type Mutation {
   addPosition(positionInput: CreatePositionInput!): Position!
   deletePosition(id: Float!): Boolean!
-  addEmployee(employeeInput: CreateEmployeeInput!): Employee!
-  deleteEmployee(id: Float!): Boolean!
   addDepartment(departmentInput: CreateDepartmentInput!): Department!
   deleteDepartment(id: Float!): Boolean!
+  addEmployee(employeeInput: CreateEmployeeInput!): Employee!
+  deleteEmployee(id: Float!): Boolean!
 }
 
 type Position {
   id: ID!
-  title: String!
+  title: String
   historicalIndex: Int!
+  department: Department
 }
 
 type Query {
   positions: [Position!]!
   position(id: Float!): Position!
-  employees: [Employee!]!
-  employee(id: Float!): Employee!
   departments: [Department!]!
   department(id: Float!): Department!
+  employees: [Employee!]!
+  employee(id: Float!): Employee!
 }

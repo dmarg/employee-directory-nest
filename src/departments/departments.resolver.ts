@@ -6,7 +6,7 @@ import { EmployeesService } from 'src/employees/employees.service';
 import { Inject, forwardRef } from '@nestjs/common';
 import { Department } from './departments.entity';
 
-@Resolver('Departments')
+@Resolver(of => Department)
 export class DepartmentsResolver {
   constructor(private readonly departmentsService: DepartmentsService, @Inject(forwardRef(() => PositionsService)) private readonly positionsService: PositionsService) {}
 

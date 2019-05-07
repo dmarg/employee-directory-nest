@@ -3,7 +3,7 @@ import { Field, ID, ObjectType, Int } from 'type-graphql';
 import { Position } from 'src/positions/positions.entity';
 import { type } from 'os';
 
-@Entity()
+@Entity('employees')
 @ObjectType()
 export class Employee {
 
@@ -11,25 +11,25 @@ export class Employee {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Field()
-  @Column('text')
+  @Field({ nullable: true })
+  @Column('text', { name: 'first_name', nullable: true })
   firstName: string;
 
-  @Field()
-  @Column('text')
+  @Field({ nullable: true })
+  @Column('text', { name: 'last_name', nullable: true })
   lastName: string;
   
   @Field(type => Int)
-  @Column({type: 'int'})
+  @Column('int', { nullable: true })
   age: number;
-
+  
   @Field(type => [Position], { nullable: true })
   @OneToMany(type => Position, position => position.employee)
   positions?: Position[];
-
+  
   @Field(type => Position, { nullable: true })
   currentPosition?: Position
-
+  
   // @Column('datetime')
   // createdAt: Date;
   

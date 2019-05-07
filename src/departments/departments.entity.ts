@@ -3,7 +3,7 @@ import { Field, ID, ObjectType, Int } from 'type-graphql';
 import { Position } from 'src/positions/positions.entity';
 import { type } from 'os';
 
-@Entity()
+@Entity('departments')
 @ObjectType()
 export class Department {
 
@@ -11,8 +11,8 @@ export class Department {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Field()
-  @Column('text')
+  @Field({ nullable: true })
+  @Column('text', { nullable: true })
   name: string;
 
   @Field(type => [Position], { nullable: true })
